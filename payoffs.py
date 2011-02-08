@@ -1,7 +1,3 @@
-# Module for option pricing
-# OOP Monte Carlo approach, insipired by Mark Joshi's C++ book
-# No Numpy, I want something that can run on Google App Engine
-# (c) Nick Collins 2011-01-06
 
 import math
 import random
