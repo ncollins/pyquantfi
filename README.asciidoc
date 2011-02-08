@@ -5,9 +5,10 @@ Nick Collins <nick@vividx.co.uk>
 :website: https://github.com/ncollins/pyQuantFi
 
 PyQuantFi is a simple quantitative finance library written in Python.
-It is adapted from code in the book "C++ Design Patterns and Derivatives 
-Pricing" by Mark Joshi. Currently it has features covered in the first 6
-chapters, including classes for options, payoffs, parameters, random number generators and statistics gathering.
+It is adapted from the framework in the book "C++ Design Patterns and 
+Derivatives Pricing" by Mark Joshi. Currently it has features covered in 
+the first 6 chapters, including classes for options, payoffs, parameters, 
+random number generators and statistics gathering.
 
 PyQuantFi only requires the Python Standard Library, it does not
 use any additional libraries written in C (e.g. NumPy, SciPy). 
