@@ -1,6 +1,8 @@
 
-
 class StatisticMC(object):
+    """
+    Abstract statistics gathering class
+    """
 
     def addOneResult(self,value):
         self._storeOneResult(value)

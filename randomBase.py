@@ -4,6 +4,9 @@ from random import *
 from normals import *
 
 class RandomBase(object):
+    """
+    Abstract random number class
+    """
 
     def __init__(self, dim):
         self._dimension = dim
@@ -31,13 +34,17 @@ class RandomBase(object):
 
     def _getGaussians(self):
         tmp = self.getUniforms()
-        return map(inverseCumulativeNormal,tmp)
+        #return map(inverseCumulativeNormal,tmp) # incompatible with Py3.1
+        return [inverseCumulativeNormal(x) for x in tmp]
 
     def _resetDimensionality(self,newDim):
         self._dimension = newDim
 
 
 class ParkMiller(object):
+    """
+    Park-Miller random number generator
+    """
 
     def __init__(self, seed = 1):
         self._const_a = 16807
@@ -65,6 +72,10 @@ class ParkMiller(object):
 
     
 class RandomParkMiller(RandomBase):
+    """
+    A RandomBase class using the ParkMiller class
+    to geneter the uniform random variables
+    """
     
     def __init__(self,dim,seed=1):
         self._dimension = dim
@@ -98,6 +109,10 @@ class RandomParkMiller(RandomBase):
 
 
 class AntiThetic(RandomBase):
+    """
+    Anti-thetic sampling class, acts as a wrapper for
+    any other RandomBase class
+    """
 
     def __init__(self,base):
         self._base = base

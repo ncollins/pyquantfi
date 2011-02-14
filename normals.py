@@ -1,12 +1,7 @@
 
 from math import exp, log, fabs
-#from math import pi, sqrt
 
 oneOverRootTwoPi = 0.398942280401433
-
-#print oneOverRootTwoPi
-
-#print 1 / sqrt(2 * pi)
 
 def normalDensity(x):
     return oneOverRootTwoPi * exp(- x*x / 2)

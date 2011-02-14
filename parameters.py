@@ -1,8 +1,10 @@
 
 class Parameter(object):
-    
-    # integral and integralSq methods are to be defined
-    # in inheriting classes
+    """
+    Abstract parameter class:
+    The integral() and integralSq() methods are "public"
+    but should be definited in the child object.
+    """
 
     def mean(self,t1,t2):
         total = self.integral(t1,t2)
