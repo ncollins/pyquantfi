@@ -29,12 +29,23 @@ gatherer = ConvergenceTable(gatherer0)
 randomGen0 = RandomParkMiller(10,1)
 randomGen = AntiThetic(randomGen0)
 
+
+gathererB0 = StatisticMean()
+gathererB = ConvergenceTable(gathererB0)
+randomStrat0 = SimpleStratifiedPM(1,8)
+randomStrat = AntiThetic(randomStrat0)
+
 # CALCULATIONS
 
 t1 = time.time()
 
 simpleMC8(call_130_1, SPOT_100, vol, r, N, gatherer, randomGen)
 print(gatherer.getResults())
+
+print()
+
+simpleMC8(call_130_1, SPOT_100, vol, r, N, gathererB, randomStrat)
+print(gathererB.getResults())
 
 t2 = time.time()
 print(str(round(t2 - t1,2)) + " seconds")

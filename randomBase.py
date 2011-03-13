@@ -150,3 +150,64 @@ class AntiThetic(RandomBase):
         self._base.reset()
         self._oddEven = True
 
+# stratified random sampling
+
+def loop(N):
+    i = 0
+    while 1:
+        yield i
+        i += 1
+        if i == N: i = 0
+
+def stratified(numSeg):
+    l = loop(numSeg)
+    while 1:
+        a = l.next() + .0
+        yield uniform(a/numSeg,(a+1)/numSeg)
+
+
+class SimpleStratified(RandomBase):
+    
+    def __init__(self,seed=0,numberOfSegments=2**16):
+        self._dimension = 1
+        self._seed = seed
+        self._numberOfSegments = numberOfSegments
+        #self._loop = loop(numberOfSegments)
+        self._stratified = stratified(numberOfSegments)
+
+    def _getUniforms(self):
+        return [self._stratified.next()]
+
+class SimpleStratifiedPM(RandomBase):
+
+    def __init__(self,seed=0,numberOfSegments=2**16):
+        self.dimension = 1
+        self._rpm = RandomParkMiller(1,seed)
+        self._seed = seed
+        self._numberOfSegments = numberOfSegments
+        self._loop = loop(numberOfSegments)
+
+    def _getUniforms(self):
+        rv = self._rpm.getUniforms()[0]
+        a = self._loop.next()
+        x = (a + rv) / self._numberOfSegments
+        if x == 0: print rv,a,self._numberOfSegments
+        return [(a + rv) / self._numberOfSegments]
+
+#testing
+
+if __name__ == "__main__":
+    #rpm = RandomParkMiller(1,1)
+    rpm = SimpleStratifiedPM(1,16)
+    N = 2**12
+    r = []
+    for i in range(10):
+        x = rpm.getUniforms()[0]
+        r.append(x)
+        print(x)
+    mean = sum(r)/N
+    var = sum((x-mean)**2 for x in r)/N
+    print(mean)
+    print(var)
+    print(var**0.5)
+    
