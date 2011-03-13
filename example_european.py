@@ -34,10 +34,7 @@ randomGen = AntiThetic(randomGen0)
 t1 = time.time()
 
 simpleMC8(call_130_1, SPOT_100, vol, r, N, gatherer, randomGen)
-
 print(gatherer.getResults())
-print(simpleMC2(call_100_1, SPOT_130, vol, r, N))
 
 t2 = time.time()
-
 print(str(round(t2 - t1,2)) + " seconds")

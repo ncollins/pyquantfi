@@ -120,10 +120,8 @@ class PathDependentAsian(PathDependent):
     def _cashflows(self,spotValues,generatedFlows):
         #total = sum(spotValues)
         #mean = total/self._numberOfTimes
-
         product = reduce(lambda x,y: x * y,spotValues)
         mean = product ** (1./self._numberOfTimes)
-
         generatedFlows[0] = Cashflow(0,self._payoff(mean))
         #generatedFlows[0].timeIndex = 0
         #generatedFlows[0].amounts = self.payoff(mean)

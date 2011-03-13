@@ -33,9 +33,7 @@ class RandomBase(object):
         self._resetDimensionality(newDim)
 
     def _getGaussians(self):
-        tmp = self.getUniforms()
-        #return map(inverseCumulativeNormal,tmp) # incompatible with Py3.1
-        return [inverseCumulativeNormal(x) for x in tmp]
+        return [inverseCumulativeNormal(x) for x in self.getUniforms()]
 
     def _resetDimensionality(self,newDim):
         self._dimension = newDim
@@ -46,7 +44,7 @@ class ParkMiller(object):
     Park-Miller random number generator
     """
 
-    def __init__(self, seed = 1):
+    def __init__(self,seed=1,N=2**32):
         self._const_a = 16807
         self._const_m = 2147483647
         self._const_q = 127773
@@ -62,7 +60,10 @@ class ParkMiller(object):
     def min(self):
         return 1
 
-    def getOneRandomInteger(self):
+    def __iter__(self):
+        return self
+
+    def next(self):
         k = self._seed / self._const_q
         self._seed = (self._const_a * (self._seed - k * self._const_q) 
                     - k * self._const_r)
@@ -87,7 +88,7 @@ class RandomParkMiller(RandomBase):
         variates = []
         for i in range(self.getDimensionality()):
             variates.append(
-                self._innerGenerator.getOneRandomInteger()
+                self._innerGenerator.next()
                 * self._reciprocal)
         return variates
 
