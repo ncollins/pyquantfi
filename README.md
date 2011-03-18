@@ -1,6 +1,7 @@
 PyQuantFi README
 ================================================================================
 Nick Collins <nick@vividx.co.uk>
+
 [https://github.com/ncollins/pyQuantFi](https://github.com/ncollins/pyQuantFi)
 
 Overview
