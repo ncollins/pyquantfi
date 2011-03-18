@@ -1,11 +1,10 @@
 PyQuantFi README
-===================
+================================================================================
 Nick Collins <nick@vividx.co.uk>
-:Author Initials: NJC
-:website: https://github.com/ncollins/pyQuantFi
+[https://github.com/ncollins/pyQuantFi](https://github.com/ncollins/pyQuantFi)
 
 Overview
---------
+--------------------------------------------------------------------------------
 PyQuantFi is a simple quantitative finance library written in Python.
 It is adapted from the framework in the book "C++ Design Patterns and 
 Derivatives Pricing" by Mark Joshi. Currently it has features covered in 
@@ -19,7 +18,7 @@ it will run on a wider range of Python implementations, including
 PyPy, Jython and Google App Engine.
 
 Known Issues
-------------
+--------------------------------------------------------------------------------
 I have tested the code on the following Python implementations:
 
 - Python 2.5, Mac OS X
