@@ -19,4 +19,3 @@ def simpleMC8(option, spot, vol, r, N, gatherer, randomGen):
         gatherer.addOneResult(discounting * thisPayoff)
 
     return
-

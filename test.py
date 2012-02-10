@@ -2,10 +2,10 @@
 
 import time
 
-from payoffs import *
-from options import *
-from simpleMC import *
-from parameters import *
+from payoffs import VanillaCall
+from options import VanillaOption
+from simpleMC import simpleMC8
+from parameters import ParameterConstant
 from statisticsMC import *
 from randomBase import *
 
@@ -27,11 +27,5 @@ gatherer = ConvergenceTable(gatherer0)
 randomGen0 = RandomParkMiller(10,1)
 randomGen = AntiThetic(randomGen0)
 
-t1 = time.time()
-
-#simpleMC7(call_130_1, 100, vol, r, N, gatherer)
 simpleMC8(call_130_1, 100, vol, r, N, gatherer, randomGen)
-print gatherer.getResults()
-print simpleMC2(call_100_1, 130, vol, r, N)
-t2 = time.time()
-print str(round(t2 - t1,2)) + " seconds"
+print(gatherer.getResults())

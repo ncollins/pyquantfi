@@ -43,8 +43,8 @@ t1 = time.time() # start time
 
 engine = ExoticBSEngine(asian,r,d,vol,randomGen,100)
 engine.doSimulation(N,gatherer)
-print gatherer.getResults()
+print(gatherer.getResults())
 
 t2 = time.time() # stop time
 
-print str(round(t2 - t1,2)) + " seconds"
+print(str(round(t2 - t1,2)) + " seconds")

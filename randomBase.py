@@ -75,7 +75,7 @@ class ParkMiller(object):
 class RandomParkMiller(RandomBase):
     """
     A RandomBase class using the ParkMiller class
-    to geneter the uniform random variables
+    to generate the uniform random variables
     """
     
     def __init__(self,dim,seed=1):
@@ -191,7 +191,7 @@ class SimpleStratifiedPM(RandomBase):
         rv = self._rpm.getUniforms()[0]
         a = self._loop.next()
         x = (a + rv) / self._numberOfSegments
-        if x == 0: print rv,a,self._numberOfSegments
+        if x == 0: print(rv,a,self._numberOfSegments)
         return [(a + rv) / self._numberOfSegments]
 
 #testing

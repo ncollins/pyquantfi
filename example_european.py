@@ -11,7 +11,7 @@ from randomBase import *
 
 # CONSTANTS
 
-N = 100000
+N = 2 ** 16 #100000
 SPOT_100 = 100
 SPOT_130 = 130
 
