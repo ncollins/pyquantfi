@@ -42,7 +42,7 @@ class ParkMiller(object):
         a, m, q, r = self._const_a, self._const_m, self._const_q, self._const_r
         count = 0
         while count < N:
-            k = self._seed / q
+            k = self._seed // q # // ensures integer division for Python 3.
             self._seed = (a * (self._seed - k * q) - k * r)
             if self._seed < 0:
                 self._seed += m
@@ -86,6 +86,7 @@ class RandomParkMiller(RandomBase):
     seed = property(_getSeed, _setSeed)
 
 
+
 class AntiThetic(RandomBase):
     """
     Anti-thetic sampling class: wraps another RandomBase class.
@@ -125,6 +126,7 @@ def loop(N, s):
         i += 1
 
 
+
 class SimpleStratifiedPM(RandomBase):
     """
     Stratified random sampling based on the RandomParkMiller class.
@@ -141,15 +143,16 @@ class SimpleStratifiedPM(RandomBase):
         return ([(l + x[0])/s] for l, x in zip(loop(N, s), self._rpm.getUniforms(N)))
         
 
-#testing
+
+# Testing
 
 if __name__ == "__main__":
     rv = AntiThetic(SimpleStratifiedPM(1,16))
-    N = 2**15
+    N = 2**8
     r = []
-    for v in rv.getGaussians(N):
+    for v in rv.getUniforms(N):
         r.append(v)
-    r = map(lambda x: x[0],r)
+    r = [x[0] for x in r]
     mean = sum(r)/N
     var = sum((x-mean)**2 for x in r)/N
     print("mean = %f" % mean)

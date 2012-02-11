@@ -29,7 +29,7 @@ gatherer = ConvergenceTable(gatherer0)
 gathererB0 = StatisticMean()
 gathererB = ConvergenceTable(gathererB0)
 
-randomStrat0 = SimpleStratifiedPM(1,128)
+randomStrat0 = SimpleStratifiedPM(1,64)
 randomStrat = AntiThetic(randomStrat0)
 
 
