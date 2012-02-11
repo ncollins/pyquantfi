@@ -1,110 +1,59 @@
 # random number class
 
-from random import normalvariate, uniform
+from random import normalvariate, random
 from normals import *
 
-class SimpleRandom(object):
+
+class RandomBase(object):
     """
-    This is a template for the new style of random number classes.
-    getUniforms() and getNormals() return a generator object.
+    Abstract random number class.
+    Uses the standard library's random() for uniform random variables and
+    normals.inverseCumulativeNormal() to transform them.
     """
 
     def __init__(self, dim):
         self.dim = dim
 
-    def getGaussians(self, N):
-        def vector():
-            return (normalvariate(0,1) for x in range(self.dim))
-        return (vector() for x in range(N))
-
     def getUniforms(self, N):
         def vector():
-            return (uniform(0,1) for x in range(self.dim))
+            return [random() for x in range(self.dim)]
         return (vector() for x in range(N))
-        
 
-class SimpleAntiThetic(SimpleRandom):
     def getGaussians(self, N):
-        def gen():
-            for x in xrange(N/2):
-                normal = [normalvariate(0,1) for x in range(self.dim)]
-                yield normal
-                yield [-n for n in normal]
-        return gen()
+        return ([inverseCumulativeNormal(x) for x in v] for v in self.getUniforms(N))
 
-class RandomBase(object):
-    """
-    Abstract random number class.
-    """
-
-    def __init__(self, dim):
-        self._dimension = dim
-
-    def getDimensionality(self):
-        return self._dimension
-
-    def getUniforms(self):
-        return self._getUniforms()
-
-    def getGaussians(self):
-        return self._getGaussians()
-
-    def skip(self,numberOfPaths):
-        return self._skip(numberOfPaths)
-
-    def setSeed(self, seed):
-        self._setSeed(seed)
-
-    def reset(self):
-        self._reset
-
-    def resetDimensionality(self, newDim):
-        self._resetDimensionality(newDim)
-
-    def _getGaussians(self):
-        return [inverseCumulativeNormal(x) for x in self.getUniforms()]
-
-    def _resetDimensionality(self,newDim):
-        self._dimension = newDim
 
 
 class ParkMiller(object):
     """
     Park-Miller random number generator.
+    stream() method returns a generator producing pseudo-random
+    numbers in the interval [1, 2147483646].
     """
 
-    def __init__(self,seed=1,N=2**32):
+    def __init__(self,seed=1):
         self._const_a = 16807
         self._const_m = 2147483647
         self._const_q = 127773
         self._const_r = 2836
-        self._seed = seed
+        self._seed = max(int(seed),1)
+        self.maximum = self._const_m - 1
+        self.minimum = 1
 
-    def setSeed(self,seed):
-        self._seed = int(seed) or 1
-
-    def max(self):
-        return self._const_m - 1
-
-    def min(self):
-        return 1
-
-    def iter(self):
-        return self
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        return self.next()
-
-    def next(self):
-        k = self._seed / self._const_q
-        self._seed = (self._const_a * (self._seed - k * self._const_q) 
-                    - k * self._const_r)
-        if self._seed < 0:
-            self._seed += self._const_m
-        return self._seed
+    def stream(self,N):
+        """
+        Park-Miller random number generator.
+        Generates pseudo-random numbers in the interval [1, 2147483646].
+        """
+        a, m, q, r = self._const_a, self._const_m, self._const_q, self._const_r
+        count = 0
+        while count < N:
+            k = self._seed / q
+            self._seed = (a * (self._seed - k * q) - k * r)
+            if self._seed < 0:
+                self._seed += m
+            yield self._seed
+            count += 1
 
     
 class RandomParkMiller(RandomBase):
@@ -114,130 +63,87 @@ class RandomParkMiller(RandomBase):
     """
     
     def __init__(self,dim,seed=1):
-        self._dimension = dim
-        self._initialSeed = seed
-        self._innerGenerator = ParkMiller(seed)
-        self._reciprocal = 1/(1. + self._innerGenerator.max())
+        self.dim = dim
+        self._seed = seed
+        self._pm = ParkMiller(seed)
+        self._r = 1/(1. + self._pm.maximum)
 
-    def _getUniforms(self):
-        dim = self.getDimensionality()
-        r = self._reciprocal
-        return [x * r
-                for x,y in zip(self._innerGenerator,range(dim))]
+    def getUniforms(self,N):
+        count = 0
+        while count < N:
+            yield [x * self._r for x in self._pm.stream(self.dim)]
+            count += 1
 
-    def _skip(self, numberOfPaths):
-        tmp = []
-        for i in range(numberOfPaths):
-            tmp.append(self.getUniforms())
+    def skip(self, nPaths):
+        for i in self.getUniforms(nPaths):
+            pass
+
+    def reset(self):
+        self._pm = ParkMiller(self.seed)
+
+    def _getSeed(self):
+        return self._seed
 
     def _setSeed(self,seed):
-        self._initialSeed = seed
-        self._innerGenerator.setSeed(seed)
+        self._seed = seed
+        self.reset(seed)
 
-    def _reset(self):
-        self._innerGenerator.setSeed(self._initialSeed)
-
-    def _resetDimensionality(self,newDim):
-        self._dimension = newDim
-        self._innerGenerator.setSeed(self._initialSeed)
+    seed = property(_getSeed, _setSeed)
 
 
 class AntiThetic(RandomBase):
     """
-    Anti-thetic sampling class: acts as a wrapper for
-    any other RandomBase class.
+    Anti-thetic sampling class:
+    acts as a wrapper for any other RandomBase class.
+    Currently this only works properly for streams of an even
+    length.
     """
 
-    def __init__(self,base):
+    def __init__(self, base):
         self._base = base
         self._oddEven = True
 
-    def _getUniforms(self):
-        if self._oddEven:
-            v = self._base.getUniforms()
-            self._oddEven = False
-        else:
-            v = [(1-x) for x in self._variates]
-            self._oddEven = True
-        return v
+    def getUniforms(self, N):
+        for v in self._base.getUniforms(N/2):
+            yield v
+            yield [1-x for x in v]
 
-    def _setSeed(self,seed):
-        self._base.setSeed(seed)
+    def _setSeed(self, seed):
+        self._base.seed = seed
         self._oddEven = True
 
-    def _skip(self,numberOfPaths):
-        if numberOfPaths == 0:
-            return
-        if self._oddEven:
-            self._oddEven = False
-            self._numberOfPaths -= 1
-        self._base.skip(numberOfPaths / 2)
-        if numberOfPaths % 2 == 1: # this needs to be tidied!
-            tmp = self.getUniforms()
+    def skip(self, nPaths):
+        self._base.skip(nPaths / 2)
 
-    def _resetDimensionality(self,newDim):
-        self._dimensionality = newDim
-        self._base.resetDimensionality(newDim)
-
-    def _reset(self):
+    def reset(self):
         self._base.reset()
         self._oddEven = True
 
 
 # stratified random sampling
 
-def loop(N):
+def loop(N, s):
     i = 0
-    while 1:
-        yield i
+    while i < N:
+        yield i % s
         i += 1
-        if i == N: i = 0
-
-def stratified(N):
-    """
-    Returns uniform random variables in (0,1).
-    The interval is divided into numSeg segments and an equal number
-    of rv is taken from each segment.
-    """
-    l = loop(N)
-    while 1:
-        a = l.next() + .0
-        yield uniform(a/N, (a+1)/N)
-
-
-
-class SimpleStratified(RandomBase):
-    
-    def __init__(self,seed=0,numberOfSegments=2**16):
-        self._dimension = 1
-        self._seed = seed
-        self._numberOfSegments = numberOfSegments
-        self._stratified = stratified(numberOfSegments)
-
-    def _getUniforms(self):
-        return [self._stratified.next()]
-
 
 
 class SimpleStratifiedPM(RandomBase):
     """
     Stratified random sampling based on the RandomParkMiller class.
-    After returning (x1, x2, x3, ...) it will next return (-x1, -x2, -x3, ...).
     """
 
-    def __init__(self,seed=0,segments=2**16):
-        self.dimension = 1
+    def __init__(self,seed=1,segments=2**8):
+        self.dim = 1
         self._rpm = RandomParkMiller(1,seed)
         self._seed = seed
         self._segments = segments
-        self._loop = loop(segments)
 
-    def _getUniforms(self):
-        rv = self._rpm.getUniforms()[0]
-        a = self._loop.__next__()
-        x = (a + rv) / self._segments
-        if x == 0: print(rv,a,self._segments)
-        return [(a + rv) / self._segments]
+    def getUniforms(self, N):
+        s = self._segments
+        return ([(l + x[0])/s] for l, x in zip(loop(N, s), self._rpm.getUniforms(N)))
+        
 
 #testing
 
