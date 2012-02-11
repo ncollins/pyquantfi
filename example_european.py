@@ -7,11 +7,11 @@ from options import *
 from simpleMC import *
 from parameters import *
 from statisticsMC import *
-from randomBase import SimpleRandom
+from randomBase import SimpleRandom, SimpleAntiThetic
 
 # CONSTANTS
 
-N = 2 ** 16 #100000
+N = 2 ** 18 #100000
 SPOT_100 = 100
 SPOT_130 = 130
 
@@ -36,17 +36,17 @@ gathererB = ConvergenceTable(gathererB0)
 #randomStrat = AntiThetic(randomStrat0)
 
 randomGen = SimpleRandom(dim=1)
-
+randomGenA = SimpleAntiThetic(dim=1)
 # CALCULATIONS
 
 t1 = time.time()
 
-simpleMC8(call_130_1, SPOT_100, vol, r, N, gatherer, randomGen)
+simpleMC8(call_130_1, SPOT_100, vol, r, N, gatherer, randomGenA)
 print(gatherer.getResults())
 
-print()
+print("")
 
-simpleMC8(call_130_1, SPOT_100, vol, r, N, gathererB, randomGen)
+simpleMC8(call_130_1, SPOT_100, vol, r, N, gathererB, randomGenA)
 print(gathererB.getResults())
 
 t2 = time.time()

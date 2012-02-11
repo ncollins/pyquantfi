@@ -22,7 +22,15 @@ class SimpleRandom(object):
             return (uniform(0,1) for x in range(self.dim))
         return (vector() for x in range(N))
         
-        
+
+class SimpleAntiThetic(SimpleRandom):
+    def getGaussians(self, N):
+        def gen():
+            for x in xrange(N/2):
+                normal = [normalvariate(0,1) for x in range(self.dim)]
+                yield normal
+                yield [-n for n in normal]
+        return gen()
 
 class RandomBase(object):
     """
