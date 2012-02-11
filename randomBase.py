@@ -1,7 +1,7 @@
 # random number class
 
-from random import normalvariate, random
-from normals import *
+from random import random
+from normals import inverseCumulativeNormal
 
 
 class RandomBase(object):
@@ -15,9 +15,7 @@ class RandomBase(object):
         self.dim = dim
 
     def getUniforms(self, N):
-        def vector():
-            return [random() for x in range(self.dim)]
-        return (vector() for x in range(N))
+        return ([random() for x in range(self.dim)] for x in range(N))
 
     def getGaussians(self, N):
         return ([inverseCumulativeNormal(x) for x in v] for v in self.getUniforms(N))
@@ -41,10 +39,6 @@ class ParkMiller(object):
         self.minimum = 1
 
     def stream(self,N):
-        """
-        Park-Miller random number generator.
-        Generates pseudo-random numbers in the interval [1, 2147483646].
-        """
         a, m, q, r = self._const_a, self._const_m, self._const_q, self._const_r
         count = 0
         while count < N:
@@ -54,6 +48,7 @@ class ParkMiller(object):
                 self._seed += m
             yield self._seed
             count += 1
+
 
     
 class RandomParkMiller(RandomBase):
@@ -93,10 +88,8 @@ class RandomParkMiller(RandomBase):
 
 class AntiThetic(RandomBase):
     """
-    Anti-thetic sampling class:
-    acts as a wrapper for any other RandomBase class.
-    Currently this only works properly for streams of an even
-    length.
+    Anti-thetic sampling class: wraps another RandomBase class.
+    Currently this only works properly for streams of an even length.
     """
 
     def __init__(self, base):
@@ -120,9 +113,12 @@ class AntiThetic(RandomBase):
         self._oddEven = True
 
 
-# stratified random sampling
 
 def loop(N, s):
+    """
+    Returns a generator of length N, returning
+    a loop of values modulo s.
+    """
     i = 0
     while i < N:
         yield i % s
@@ -148,16 +144,13 @@ class SimpleStratifiedPM(RandomBase):
 #testing
 
 if __name__ == "__main__":
-    #rpm = RandomParkMiller(1,1)
-    rv = SimpleStratifiedPM(1,16)
-    N = 2**12
+    rv = AntiThetic(SimpleStratifiedPM(1,16))
+    N = 2**15
     r = []
-    for i in range(N):
-        x = rv.getUniforms()[0]
-        r.append(x)
-        print(x)
+    for v in rv.getGaussians(N):
+        r.append(v)
+    r = map(lambda x: x[0],r)
     mean = sum(r)/N
     var = sum((x-mean)**2 for x in r)/N
     print("mean = %f" % mean)
     print("variance = %f" % var)
-    print("stdev = %f" % var**0.5)
