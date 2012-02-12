@@ -1,3 +1,6 @@
+# PyQuantFi - payoffs.py
+# (c) 2012 Nick Collins
+
 import math
 import random
 

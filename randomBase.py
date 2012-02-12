@@ -1,4 +1,5 @@
-# random number class
+# PyQuantFi - randomBase.py
+# (c) 2012 Nick Collins
 
 from random import random
 from normals import inverseCumulativeNormal

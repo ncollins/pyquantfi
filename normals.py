@@ -1,3 +1,5 @@
+# PyQuantFi - normals.py
+# (c) 2012 Nick Collins
 
 from math import exp, log, fabs
 
@@ -26,4 +28,3 @@ def inverseCumulativeNormal(u):
                 + r*(c[6] + r*(c[7] + r*(c[7] + r*c[8])))))))))
         if x < 0: r = -r
     return r
-

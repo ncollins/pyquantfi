@@ -1,3 +1,6 @@
+# PyQuantFi - pathDependent.py
+# (c) 2012 Nick Collins
+
 from math import log, exp, sqrt
 from payoffs import *
 

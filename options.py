@@ -1,3 +1,5 @@
+# PyQuantFi - options.py
+# (c) 2012 Nick Collins
 
 class VanillaOption(object):
     

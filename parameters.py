@@ -1,3 +1,5 @@
+# PyQuantFi - parameters.py
+# (c) 2012 Nick Collins
 
 class Parameter(object):
     """

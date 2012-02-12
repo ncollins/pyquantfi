@@ -1,3 +1,5 @@
+# PyQuantFi - statisticsMC.py
+# (c) 2012 Nick Collins
 
 class StatisticMC(object):
     """

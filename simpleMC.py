@@ -1,3 +1,6 @@
+# PyQuantFi - simpleMC.py
+# (c) 2012 Nick Collins
+
 from math import exp, log, sqrt
 from random import normalvariate, lognormvariate, seed
 
