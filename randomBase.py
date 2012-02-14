@@ -18,7 +18,7 @@ class RandomBase(object):
         self.dim = dim
 
     def getUniforms(self, N):
-        return ([random() for x in range(self.dim)] for x in range(N))
+        return ([random() for x in xrange(self.dim)] for x in xrange(N))
 
     def getGaussians(self, N):
         return ([inverseCumulativeNormal(x) for x in v] for v in self.getUniforms(N))
