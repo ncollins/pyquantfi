@@ -149,10 +149,7 @@ class SimpleStratifiedPM(RandomBase):
 if __name__ == "__main__":
     rv = AntiThetic(SimpleStratifiedPM(1,16))
     N = 2**8
-    r = []
-    for v in rv.getUniforms(N):
-        r.append(v)
-    r = [x[0] for x in r]
+    r = [x[0] for x in rv.getUniforms(N)]
     mean = sum(r)/N
     var = sum((x-mean)**2 for x in r)/N
     print("mean = %f" % mean)
