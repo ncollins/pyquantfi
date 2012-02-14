@@ -2,7 +2,10 @@
 
 from random import random
 from normals import inverseCumulativeNormal
+from sys import version_info
 
+if version_info[0] == 3:
+    xrange = range
 
 class RandomBase(object):
     """
@@ -64,10 +67,7 @@ class RandomParkMiller(RandomBase):
         self._r = 1/(1. + self._pm.maximum)
 
     def getUniforms(self,N):
-        count = 0
-        while count < N:
-            yield [x * self._r for x in self._pm.stream(self.dim)]
-            count += 1
+        return ([x * self._r for x in self._pm.stream(self.dim)] for i in xrange(N))
 
     def skip(self, nPaths):
         for i in self.getUniforms(nPaths):
@@ -98,7 +98,7 @@ class AntiThetic(RandomBase):
         self._oddEven = True
 
     def getUniforms(self, N):
-        for v in self._base.getUniforms(N/2):
+        for v in self._base.getUniforms(N // 2): # the argument must be an 'int' in Python3
             yield v
             yield [1-x for x in v]
 
