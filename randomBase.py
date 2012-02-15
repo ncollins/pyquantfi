@@ -74,7 +74,7 @@ class RandomParkMiller(RandomBase):
 
     def getUniforms(self,N):
         if self.dim == 1:
-            return ([v * self._r] for v in self._pm.stream(N))
+            return ([x * self._r] for x in self._pm.stream(N))
         else:
             return ([x * self._r for x in self._pm.stream(self.dim)] for i in xrange(N))
 
