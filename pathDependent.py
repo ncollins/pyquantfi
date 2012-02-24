@@ -45,9 +45,6 @@ class ExoticEngine(object):
         spotValues = [0] * len(self._product.getLookAtTimes())
         for i in range(numberOfPaths):
             self.getOnePath(spotValues)
-            #print "doSimulation > getOnePath(): "
-            #print "spotValues = " + str(spotValues)
-            #print "_cashflows = " + str(self._cashflows)
             thisValue = self.doOnePath(spotValues)
             statsGatherer.addOneResult(thisValue)
 
@@ -95,15 +92,13 @@ class ExoticBSEngine(ExoticEngine):
 
         
     def _getOnePath(self,spotValues):
-        #spotValues = [] # for now spotValues is overwritten
         self._variates = self._randomGen.getGaussians()
         currentLogSpot = self._logSpot
         for i in range(self._numberOfTimes):
             currentLogSpot += self._drifts[i]
             currentLogSpot += self._stDevs[i] * self._variates[i]
             spotValues[i] = exp(currentLogSpot)
-            #spotValues.append(exp(currentLogSpot)) #
-        return spotValues #
+        return spotValues
 
 
 class PathDependentAsian(PathDependent):
@@ -121,14 +116,9 @@ class PathDependentAsian(PathDependent):
         return [self._deliveryTime]
 
     def _cashflows(self,spotValues,generatedFlows):
-        #total = sum(spotValues)
-        #mean = total/self._numberOfTimes
-        #product = reduce(lambda x,y: x * y,spotValues)
         product = 1
         for value in spotValues:
             product *= value
         mean = product ** (1./self._numberOfTimes)
         generatedFlows[0] = Cashflow(0,self._payoff(mean))
-        #generatedFlows[0].timeIndex = 0
-        #generatedFlows[0].amounts = self.payoff(mean)
 
