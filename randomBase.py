@@ -114,6 +114,14 @@ class AntiThetic(RandomBase):
         self._base.reset()
         self._oddEven = True
 
+    def _getDim(self):
+        return self._base.dim
+
+    def _setDim(self, dim):
+        self._base.dim = dim
+
+    dim = property(_getDim, _setDim)
+
 
 
 def loop(N, s):
