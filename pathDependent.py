@@ -2,6 +2,10 @@
 # (c) 2012 Nick Collins
 
 from math import log, exp, sqrt
+from sys import version_info
+
+if version_info[0] == 3:
+    xrange = range
 
 
 class Cashflow(object):
@@ -55,7 +59,7 @@ class ExoticEngine(object):
         numberFlows = self._product.maxNumberOfCashflows()
         self._product.cashflows(spotValues,self._cashflows)
         value = 0.
-        for i in range(numberFlows):
+        for i in xrange(numberFlows):
             value += (self._cashflows[i].amount *
                       self._discounts[self._cashflows[i].timeIndex])
         return value
@@ -84,7 +88,7 @@ class ExoticBSEngine(ExoticEngine):
                             - 0.5 * var]
         self._stDevs = [sqrt(var)]
 
-        for i in range(1,self._numberOfTimes):
+        for i in xrange(1,self._numberOfTimes):
             thisVar = vol.integralSq(times[i-1],times[i])
             self._drifts.append(r.integral(times[i-1],times[i])
                                 - d.integral(times[i-1],times[i])
@@ -107,7 +111,7 @@ class ExoticBSEngine(ExoticEngine):
         for v in self._randomGen.getGaussians(n):
             currentLogSpot = self._logSpot
             spotValues = []
-            for i in range(self._numberOfTimes):
+            for i in xrange(self._numberOfTimes):
                 currentLogSpot += self._drifts[i]
                 currentLogSpot += self._stDevs[i] * v[i]
                 spotValues.append(exp(currentLogSpot))
