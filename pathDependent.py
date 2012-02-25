@@ -37,17 +37,17 @@ class ExoticEngine(object):
         self._discounts = [exp(self._r.integral(0,t)) for t in 
                           self._product.possibleCashflowTimes()]
 
-    def getOnePath(self,spotValues):
-        return self._getOnePath(spotValues)
+    #def getOnePath(self,spotValues):
+    #    return self._getOnePath(spotValues)
 
     def doSimulation(self,numberOfPaths,statsGatherer):
         #spotValues = [0] * len(self._product.getLookAtTimes())
-        n = len(self._product.getLookAtTimes())
+        #n = len(self._product.getLookAtTimes())
         #for i in range(numberOfPaths):
             #self.getOnePath(spotValues)
             #thisValue = self.doOnePath(spotValues)
             #statsGatherer.addOneResult(thisValue)
-        for path in self.getPaths(n):
+        for path in self.getPaths(numberOfPaths):
             thisValue = self.doOnePath(path)
             statsGatherer.addOneResult(thisValue)
 
@@ -67,8 +67,6 @@ class ExoticBSEngine(ExoticEngine):
         self._product = product
         self._r = r
         self._randomGen = randomGen
-        self._drifts = []
-        self._stDevs = []
 
         self._cashflows = [0] * self._product.maxNumberOfCashflows()
         self._discounts = [exp(self._r.integral(0,t)) for t in
@@ -78,11 +76,13 @@ class ExoticBSEngine(ExoticEngine):
         self._numberOfTimes = len(times)
         self._randomGen.dim = self._numberOfTimes
 
+        # Since the drift and stDev terms are the same for each path
+        # they are pre-calculated.
         var = vol.integralSq(0,times[0])
-        self._drifts.append(r.integral(0,times[0])
+        self._drifts = [r.integral(0,times[0])
                             - d.integral(0,times[0])
-                            - 0.5 * var)
-        self._stDevs.append(sqrt(var))
+                            - 0.5 * var]
+        self._stDevs = [sqrt(var)]
 
         for i in range(1,self._numberOfTimes):
             thisVar = vol.integralSq(times[i-1],times[i])
@@ -104,12 +104,12 @@ class ExoticBSEngine(ExoticEngine):
     #    return spotValues
 
     def getPaths(self, n):
-        currentLogSpot = self._logSpot
         for v in self._randomGen.getGaussians(n):
+            currentLogSpot = self._logSpot
             spotValues = []
             for i in range(self._numberOfTimes):
                 currentLogSpot += self._drifts[i]
-                currentLogSpot += self._stDevs[i] * v[0]
+                currentLogSpot += self._stDevs[i] * v[i]
                 spotValues.append(exp(currentLogSpot))
             yield spotValues
 
