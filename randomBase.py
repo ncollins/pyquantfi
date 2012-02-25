@@ -3,7 +3,10 @@
 
 from random import random
 from normals import inverseCumulativeNormal
+from sys import version_info
 
+if version_info[0] == 3:
+    xrange = range
 
 class RandomBase(object):
     """
@@ -16,10 +19,16 @@ class RandomBase(object):
         self.dim = dim
 
     def getUniforms(self, N):
-        return ([random() for x in range(self.dim)] for x in range(N))
+        if self.dim == 1:
+            return ([random()] for x in xrange(N))
+        else:
+            return ([random() for x in xrange(self.dim)] for x in xrange(N))
 
     def getGaussians(self, N):
-        return ([inverseCumulativeNormal(x) for x in v] for v in self.getUniforms(N))
+        if self.dim == 1:
+            return ([inverseCumulativeNormal(v[0])] for v in self.getUniforms(N))
+        else:
+            return ([inverseCumulativeNormal(x) for x in v] for v in self.getUniforms(N))
 
 
 
@@ -65,10 +74,10 @@ class RandomParkMiller(RandomBase):
         self._r = 1/(1. + self._pm.maximum)
 
     def getUniforms(self,N):
-        count = 0
-        while count < N:
-            yield [x * self._r for x in self._pm.stream(self.dim)]
-            count += 1
+        if self.dim == 1:
+            return ([x * self._r] for x in self._pm.stream(N))
+        else:
+            return ([x * self._r for x in self._pm.stream(self.dim)] for i in xrange(N))
 
     def skip(self, nPaths):
         for i in self.getUniforms(nPaths):
@@ -99,9 +108,14 @@ class AntiThetic(RandomBase):
         self._oddEven = True
 
     def getUniforms(self, N):
-        for v in self._base.getUniforms(N/2):
-            yield v
-            yield [1-x for x in v]
+        if self.dim == 1:
+            for v in self._base.getUniforms(N // 2): # the argument must be an 'int' in Python3
+                yield v
+                yield [1-v[0]]
+        else:
+            for v in self._base.getUniforms(N // 2): # the argument must be an 'int' in Python3
+                yield v
+                yield [1-x for x in v]
 
     def _setSeed(self, seed):
         self._base.seed = seed
@@ -139,6 +153,7 @@ def loop(N, s):
 class SimpleStratifiedPM(RandomBase):
     """
     Stratified random sampling based on the RandomParkMiller class.
+    Forces self.dim = 1.
     """
 
     def __init__(self,seed=1,segments=2**8):
@@ -158,10 +173,7 @@ class SimpleStratifiedPM(RandomBase):
 if __name__ == "__main__":
     rv = AntiThetic(SimpleStratifiedPM(1,16))
     N = 2**8
-    r = []
-    for v in rv.getUniforms(N):
-        r.append(v)
-    r = [x[0] for x in r]
+    r = [x[0] for x in rv.getUniforms(N)]
     mean = sum(r)/N
     var = sum((x-mean)**2 for x in r)/N
     print("mean = %f" % mean)
