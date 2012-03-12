@@ -83,7 +83,7 @@ class ExoticBSEngine(ExoticEngine):
         self._logSpot = log(spot)
 
     def getPaths(self, n):
-        for v in self._randomGen.getGaussians(n):
+        for v in self._randomGen.get_gaussians(n):
             currentLogSpot = self._logSpot
             spotValues = []
             for i in xrange(self._numberOfTimes):

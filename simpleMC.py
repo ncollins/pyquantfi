@@ -14,7 +14,7 @@ def simpleMC8(option, spot, vol, r, N, gatherer, randomGen):
     movedSpot = spot * exp(r.integral(0,expiry) + itoCorrection)
     discounting = exp(-r.integral(0,expiry))
     
-    gaussians = randomGen.getGaussians(N)
+    gaussians = randomGen.get_gaussians(N)
     spots = (movedSpot * exp(rootVar * v[0]) for v in gaussians)
     payoffs = (option.payoff(s) for s in spots)
     for p in payoffs:

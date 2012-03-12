@@ -2,34 +2,34 @@
 # (c) 2012 Nick Collins
 
 from random import random
-from normals import inverseCumulativeNormal
+from normals import inverse_cumulative_normal
 from sys import version_info
 
 if version_info[0] == 3:
     xrange = range
 
+
 class RandomBase(object):
     """
     Abstract random number class.
     Uses the standard library's random() for uniform random variables and
-    normals.inverseCumulativeNormal() to transform them.
+    normals.inverse_cumulative_normal() to transform them.
     """
 
     def __init__(self, dim):
         self.dim = dim
 
-    def getUniforms(self, N):
+    def get_uniforms(self, N):
         if self.dim == 1:
             return ([random()] for x in xrange(N))
         else:
             return ([random() for x in xrange(self.dim)] for x in xrange(N))
 
-    def getGaussians(self, N):
+    def get_gaussians(self, N):
         if self.dim == 1:
-            return ([inverseCumulativeNormal(v[0])] for v in self.getUniforms(N))
+            return ([inverse_cumulative_normal(v[0])] for v in self.get_uniforms(N))
         else:
-            return ([inverseCumulativeNormal(x) for x in v] for v in self.getUniforms(N))
-
+            return ([inverse_cumulative_normal(x) for x in v] for v in self.get_uniforms(N))
 
 
 class ParkMiller(object):
@@ -59,7 +59,6 @@ class ParkMiller(object):
             yield self._seed
             count += 1
 
-
     
 class RandomParkMiller(RandomBase):
     """
@@ -73,28 +72,27 @@ class RandomParkMiller(RandomBase):
         self._pm = ParkMiller(seed)
         self._r = 1/(1. + self._pm.maximum)
 
-    def getUniforms(self,N):
+    def get_uniforms(self,N):
         if self.dim == 1:
             return ([x * self._r] for x in self._pm.stream(N))
         else:
             return ([x * self._r for x in self._pm.stream(self.dim)] for i in xrange(N))
 
     def skip(self, nPaths):
-        for i in self.getUniforms(nPaths):
+        for i in self.get_uniforms(nPaths):
             pass
 
     def reset(self):
         self._pm = ParkMiller(self.seed)
 
-    def _getSeed(self):
+    def _get_seed(self):
         return self._seed
 
-    def _setSeed(self,seed):
+    def _set_seed(self,seed):
         self._seed = seed
         self.reset(seed)
 
-    seed = property(_getSeed, _setSeed)
-
+    seed = property(_get_seed, _set_seed)
 
 
 class AntiThetic(RandomBase):
@@ -107,17 +105,17 @@ class AntiThetic(RandomBase):
         self._base = base
         self._oddEven = True
 
-    def getUniforms(self, N):
+    def get_uniforms(self, N):
         if self.dim == 1:
-            for v in self._base.getUniforms(N // 2): # the argument must be an 'int' in Python3
+            for v in self._base.get_uniforms(N // 2): # the argument must be an 'int' in Python3
                 yield v
                 yield [1-v[0]]
         else:
-            for v in self._base.getUniforms(N // 2): # the argument must be an 'int' in Python3
+            for v in self._base.get_uniforms(N // 2): # the argument must be an 'int' in Python3
                 yield v
                 yield [1-x for x in v]
 
-    def _setSeed(self, seed):
+    def _set_seed(self, seed):
         self._base.seed = seed
         self._oddEven = True
 
@@ -128,14 +126,13 @@ class AntiThetic(RandomBase):
         self._base.reset()
         self._oddEven = True
 
-    def _getDim(self):
+    def _get_dim(self):
         return self._base.dim
 
     def _setDim(self, dim):
         self._base.dim = dim
 
-    dim = property(_getDim, _setDim)
-
+    dim = property(_get_dim, _setDim)
 
 
 def loop(N, s):
@@ -147,7 +144,6 @@ def loop(N, s):
     while i < N:
         yield i % s
         i += 1
-
 
 
 class SimpleStratifiedPM(RandomBase):
@@ -162,18 +158,17 @@ class SimpleStratifiedPM(RandomBase):
         self._seed = seed
         self._segments = segments
 
-    def getUniforms(self, N):
+    def get_uniforms(self, N):
         s = self._segments
-        return ([(l + x[0])/s] for l, x in zip(loop(N, s), self._rpm.getUniforms(N)))
+        return ([(l + x[0])/s] for l, x in zip(loop(N, s), self._rpm.get_uniforms(N)))
         
-
 
 # Testing
 
 if __name__ == "__main__":
     rv = AntiThetic(SimpleStratifiedPM(1,16))
     N = 2**8
-    r = [x[0] for x in rv.getUniforms(N)]
+    r = [x[0] for x in rv.get_uniforms(N)]
     mean = sum(r)/N
     var = sum((x-mean)**2 for x in r)/N
     print("mean = %f" % mean)

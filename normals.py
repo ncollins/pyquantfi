@@ -3,13 +3,13 @@
 
 from math import exp, log, fabs
 
-oneOverRootTwoPi = 0.398942280401433
+ONE_OVER_ROOT_TWO_PI = 0.398942280401433
 
-def normalDensity(x):
-    return oneOverRootTwoPi * exp(- x*x / 2)
+def normal_density(x):
+    return ONE_OVER_ROOT_TWO_PI * exp(- x * x / 2)
 
-def inverseCumulativeNormal(u):
-    # using the Beasley-Springer/Moro approximation
+def inverse_cumulative_normal(u):
+    # Using the Beasley-Springer/Moro approximation.
     a = [2.50662823884, -18.61500062529, 41.39119773534, -25.44106049637]
     b = [-8.47351093090, 23.08336743743, -21.06224101826, 3.13082909833]
     c = [0.3374754822726147, 0.9761690190917186, 0.1607979714918209,
