@@ -10,7 +10,6 @@ class Payoff(object):
 class VanillaCall(Payoff):
     """
     >>> p = VanillaCall(100)
-    >>> results = (p(150),p(100.00001),p(100),p(99.99999),p(50),p(0),p(-50))
     >>> (p(150),p(100),p(50),p(0))
     (50, 0, 0, 0)
     >>> 0 == round(p(100.00001) - 0.00001,5)
@@ -27,7 +26,6 @@ class VanillaCall(Payoff):
 class VanillaPut(Payoff):
     """
     >>> p = VanillaPut(100)
-    >>> results = (p(150),p(100.00001),p(100),p(99.99999),p(50),p(0),p(-50))
     >>> (p(150),p(100),p(50),p(0))
     (0, 0, 50, 100)
     >>> 0 == round(0.00001 - p(99.99999),5)
