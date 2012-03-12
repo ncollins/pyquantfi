@@ -4,11 +4,11 @@ import time
 
 from payoffs import *
 from options import *
-from simpleMC import *
+from simple_mc import *
 from parameters import *
-from statisticsMC import *
-from randomBase import *
-from pathDependent import *
+from statistics_mc import *
+from random_base import *
+from path_dependent import *
 
 # CONSTANTS
 
