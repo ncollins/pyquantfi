@@ -43,7 +43,7 @@ t1 = time.time() # start time
 
 engine = ExoticBSEngine(asian,r,d,vol,randomGen,100)
 engine.do_simulation(N,gatherer)
-print(gatherer.getResults())
+print(gatherer.get_results())
 
 t2 = time.time() # stop time
 

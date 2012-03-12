@@ -42,7 +42,7 @@ class ExoticEngine(object):
     def do_simulation(self,numberOfPaths,statsGatherer):
         for path in self.get_paths(numberOfPaths):
             thisValue = self.do_one_path(path)
-            statsGatherer.addOneResult(thisValue)
+            statsGatherer.add_one_result(thisValue)
 
     def do_one_path(self,spotValues):
         value = 0.
@@ -67,14 +67,14 @@ class ExoticBSEngine(ExoticEngine):
 
         # Since the drift and stDev terms are the same for each path
         # they are pre-calculated.
-        var = vol.integralSq(0,times[0])
+        var = vol.integral_sq(0,times[0])
         self._drifts = [r.integral(0,times[0])
                             - d.integral(0,times[0])
                             - 0.5 * var]
         self._stDevs = [sqrt(var)]
 
         for i in xrange(1,self._numberOfTimes):
-            thisVar = vol.integralSq(times[i-1],times[i])
+            thisVar = vol.integral_sq(times[i-1],times[i])
             self._drifts.append(r.integral(times[i-1],times[i])
                                 - d.integral(times[i-1],times[i])
                                 - 0.5 * thisVar)

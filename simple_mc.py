@@ -7,7 +7,7 @@ from random import normalvariate, lognormvariate, seed
 def simpleMC8(option, spot, vol, r, N, gatherer, randomGen):
     randomGen.dim = 1
     expiry = option.expiry()
-    var = vol.integralSq(0,expiry)
+    var = vol.integral_sq(0,expiry)
     rootVar = sqrt(var)
     itoCorrection = -0.5 * var
 
@@ -18,6 +18,6 @@ def simpleMC8(option, spot, vol, r, N, gatherer, randomGen):
     spots = (movedSpot * exp(rootVar * v[0]) for v in gaussians)
     payoffs = (option.payoff(s) for s in spots)
     for p in payoffs:
-        gatherer.addOneResult(discounting * p)
+        gatherer.add_one_result(discounting * p)
 
     return

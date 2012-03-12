@@ -6,11 +6,11 @@ class StatisticMC(object):
     Abstract statistics gathering class
     """
 
-    def addOneResult(self,value):
-        self._storeOneResult(value)
+    def add_one_result(self,value):
+        self._store_one_result(value)
 
-    def getResults(self):
-        return self._getResults()
+    def get_results(self):
+        return self._get_results()
 
 
 class StatisticMean(StatisticMC):
@@ -19,11 +19,11 @@ class StatisticMean(StatisticMC):
         self._runningSum = 0
         self._pathsDone = 0
 
-    def _storeOneResult(self,value):
+    def _store_one_result(self,value):
         self._runningSum += value
         self._pathsDone += 1
 
-    def _getResults(self):
+    def _get_results(self):
         self._results = [[self._runningSum / self._pathsDone ]]
         return self._results
 
@@ -36,20 +36,20 @@ class ConvergenceTable(StatisticMC):
         self._statisticMC = gatherer
         self._results = []
 
-    def _storeOneResult(self,value):
-        self._statisticMC.addOneResult(value)
+    def _store_one_result(self,value):
+        self._statisticMC.add_one_result(value)
         self._pathsDone += 1
         if (self._pathsDone == self._stoppingPoint):
             self._stoppingPoint *= 2
-            thisResult = self._statisticMC.getResults()
+            thisResult = self._statisticMC.get_results()
             for item in thisResult:
                 item.append(self._pathsDone)
                 self._results.append(item)
 
-    def _getResults(self):
+    def _get_results(self):
         tmp = self._results
         if (self._pathsDone * 2 != self._stoppingPoint):
-            thisResult = self._statisticMC.getResults()
+            thisResult = self._statisticMC.get_results()
             for item in thisResult:
                 item.append(self._pathsDone)
                 tmp.append(item)

@@ -38,12 +38,12 @@ randomStrat = AntiThetic(randomStrat0)
 t1 = time.time()
 
 simpleMC8(call_130_1, SPOT_100, vol, r, N, gatherer, randomStrat)
-print(gatherer.getResults())
+print(gatherer.get_results())
 
 print("")
 
 simpleMC8(call_130_1, SPOT_100, vol, r, N, gathererB, randomStrat)
-print(gathererB.getResults())
+print(gathererB.get_results())
 
 t2 = time.time()
 print(str(round(t2 - t1,2)) + " seconds")
