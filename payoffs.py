@@ -16,10 +16,13 @@ class VanillaCall(Payoff):
     >>> 0 == round(p(100.00001) - 0.00001,5)
     True
     """
+    
     def __init__(self,k):
         self._strike = k
+
     def __call__(self,s):
         return max(s - self._strike, 0)
+
 
 class VanillaPut(Payoff):
     """
@@ -30,8 +33,10 @@ class VanillaPut(Payoff):
     >>> 0 == round(0.00001 - p(99.99999),5)
     True
     """
+
     def __init__(self,k):
         self._strike = k
+        
     def __call__(self,s):
         return max(self._strike - s, 0)
 
@@ -41,8 +46,10 @@ class DigitalCall(Payoff):
     >>> (p(60.00001),p(60),p(59.99999))
     (1, 0, 0)
     """
+
     def __init__(self,k):
         self._strike = k
+
     def __call__(self,s):
         if s > self._strike: return 1
         else: return 0
@@ -53,8 +60,10 @@ class DigitalPut(Payoff):
     >>> (p(60.00001),p(60),p(59.99999))
     (0, 0, 1)
     """
+
     def __init__(self,k):
         self._strike = k
+
     def __call__(self,s):
         if s < self._strike: return 1
         else: return 0
