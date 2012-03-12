@@ -18,14 +18,14 @@ class PathDependent(object):
     def __init__(self,lookAtTimes):
         self._lookAtTimes = lookAtTimes
 
-    def getLookAtTimes(self):
+    def get_look_at_times(self):
         return self._lookAtTimes
 
-    def maxNumberOfCashflows(self):
-        return self._maxNumberOfCashflows()
+    def max_number_of_cashflows(self):
+        return self._max_number_of_cashflows()
 
-    def possibleCashflowTimes(self):
-        return self._possibleCashflowTimes()
+    def possible_cashflow_times(self):
+        return self._possible_cashflow_times()
 
     def cashflows(self, spotValues):
         return self._cashflows(spotValues)
@@ -37,14 +37,14 @@ class ExoticEngine(object):
         self._product = product
         self._r = paramDiscount
         self._discounts = [exp(self._r.integral(0,t)) for t in 
-                          self._product.possibleCashflowTimes()]
+                          self._product.possible_cashflow_times()]
 
-    def doSimulation(self,numberOfPaths,statsGatherer):
-        for path in self.getPaths(numberOfPaths):
-            thisValue = self.doOnePath(path)
+    def do_simulation(self,numberOfPaths,statsGatherer):
+        for path in self.get_paths(numberOfPaths):
+            thisValue = self.do_one_path(path)
             statsGatherer.addOneResult(thisValue)
 
-    def doOnePath(self,spotValues):
+    def do_one_path(self,spotValues):
         value = 0.
         for c in self._product.cashflows(spotValues):
             value += c.amount * self._discounts[c.timeIndex]
@@ -59,9 +59,9 @@ class ExoticBSEngine(ExoticEngine):
         self._randomGen = randomGen
 
         self._discounts = [exp(self._r.integral(0,t)) for t in
-                           self._product.possibleCashflowTimes()]
+                           self._product.possible_cashflow_times()]
 
-        times = product.getLookAtTimes()
+        times = product.get_look_at_times()
         self._numberOfTimes = len(times)
         self._randomGen.dim = self._numberOfTimes
 
@@ -82,7 +82,7 @@ class ExoticBSEngine(ExoticEngine):
 
         self._logSpot = log(spot)
 
-    def getPaths(self, n):
+    def get_paths(self, n):
         for v in self._randomGen.get_gaussians(n):
             currentLogSpot = self._logSpot
             spotValues = []
@@ -101,10 +101,10 @@ class PathDependentAsian(PathDependent):
         self._numberOfTimes = len(lookAtTimes)
         self._deliveryTime = deliveryTime
 
-    def _maxNumberOfCashflows(self):
+    def _max_number_of_cashflows(self):
         return 1
 
-    def _possibleCashflowTimes(self):
+    def _possible_cashflow_times(self):
         return [self._deliveryTime]
 
     def _cashflows(self, spotValues):

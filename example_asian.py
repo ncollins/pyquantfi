@@ -42,7 +42,7 @@ d = ParameterConstant(0.00)
 t1 = time.time() # start time
 
 engine = ExoticBSEngine(asian,r,d,vol,randomGen,100)
-engine.doSimulation(N,gatherer)
+engine.do_simulation(N,gatherer)
 print(gatherer.getResults())
 
 t2 = time.time() # stop time
