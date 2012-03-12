@@ -2,11 +2,11 @@
 
 import time
 
-from payoffs import *
-from options import *
-from simple_mc import *
-from parameters import *
-from statistics_mc import *
+from payoffs import VanillaCall
+from options import VanillaOption
+from simple_mc import simple_mc
+from parameters import ParameterConstant
+from statistics_mc import StatisticMean, ConvergenceTable
 from random_base import SimpleStratifiedPM, AntiThetic
 
 # CONSTANTS
@@ -37,12 +37,12 @@ randomStrat = AntiThetic(randomStrat0)
 
 t1 = time.time()
 
-simpleMC8(call_130_1, SPOT_100, vol, r, N, gatherer, randomStrat)
+simple_mc(call_130_1, SPOT_100, vol, r, N, gatherer, randomStrat)
 print(gatherer.get_results())
 
 print("")
 
-simpleMC8(call_130_1, SPOT_100, vol, r, N, gathererB, randomStrat)
+simple_mc(call_130_1, SPOT_100, vol, r, N, gathererB, randomStrat)
 print(gathererB.get_results())
 
 t2 = time.time()

@@ -4,7 +4,7 @@
 from math import exp, log, sqrt
 from random import normalvariate, lognormvariate, seed
 
-def simpleMC8(option, spot, vol, r, N, gatherer, randomGen):
+def simple_mc(option, spot, vol, r, N, gatherer, randomGen):
     randomGen.dim = 1
     expiry = option.expiry()
     var = vol.integral_sq(0,expiry)
