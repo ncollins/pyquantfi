@@ -1,6 +1,7 @@
 # PyQuantFi - statisticsMC.py
 # (c) 2012 Nick Collins
 
+
 class StatisticMC(object):
     """
     Abstract statistics gathering class
@@ -54,4 +55,3 @@ class ConvergenceTable(StatisticMC):
                 item.append(self._pathsDone)
                 tmp.append(item)
         return tmp
-
