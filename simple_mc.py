@@ -6,7 +6,7 @@ from random import normalvariate, lognormvariate, seed
 
 def simple_mc(option, spot, vol, r, N, gatherer, randomGen):
     randomGen.dim = 1
-    expiry = option.expiry()
+    expiry = option.expiry
     var = vol.integral_sq(0,expiry)
     rootVar = sqrt(var)
     itoCorrection = -0.5 * var
