@@ -2,7 +2,7 @@
 # (c) 2012 Nick Collins
 # Designed to be used with py.test
 
-from payoffs import VanillaCall, VanillaPut, DigitalCall, DigitalPut
+from ..payoffs import VanillaCall, VanillaPut, DigitalCall, DigitalPut
 
 def test_vanilla_call_0():
     p = VanillaCall(100)
