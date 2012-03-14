@@ -2,13 +2,12 @@
 
 import time
 
-from payoffs import *
-from options import *
-from simpleMC import *
-from parameters import *
-from statisticsMC import *
-from randomBase import *
-from pathDependent import *
+from payoffs import VanillaCall
+from options import VanillaOption
+from parameters import ParameterConstant
+from statistics_mc import StatisticMean, ConvergenceTable
+from random_base import RandomParkMiller, AntiThetic
+from path_dependent import ExoticBSEngine, PathDependentAsian
 
 # CONSTANTS
 
@@ -42,9 +41,9 @@ d = ParameterConstant(0.00)
 t1 = time.time() # start time
 
 engine = ExoticBSEngine(asian,r,d,vol,randomGen,100)
-engine.doSimulation(N,gatherer)
-print gatherer.getResults()
+engine.do_simulation(N,gatherer)
+print(gatherer.get_results())
 
 t2 = time.time() # stop time
 
-print str(round(t2 - t1,2)) + " seconds"
+print(str(round(t2 - t1,2)) + " seconds")
