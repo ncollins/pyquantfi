@@ -1,8 +1,7 @@
 # PyQuantFi - simpleMC.py
 # (c) 2012 Nick Collins
 
-from math import exp, log, sqrt
-from random import normalvariate, lognormvariate, seed
+from math import exp, sqrt
 
 def simple_mc(option, spot, vol, r, N, gatherer, randomGen):
     randomGen.dim = 1
