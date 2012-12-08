@@ -11,7 +11,7 @@ from path_dependent import ExoticBSEngine, PathDependentAsian
 
 # CONSTANTS
 
-N = 100000
+N = 2**15 
 SPOT_100 = 100
 SPOT_130 = 130
 
@@ -38,12 +38,6 @@ d = ParameterConstant(0.00)
 
 # CALCULATIONS
 
-t1 = time.time() # start time
-
 engine = ExoticBSEngine(asian,r,d,vol,randomGen,100)
 engine.do_simulation(N,gatherer)
 print(gatherer.get_results())
-
-t2 = time.time() # stop time
-
-print(str(round(t2 - t1,2)) + " seconds")

@@ -11,7 +11,7 @@ from random_base import SimpleStratifiedPM, AntiThetic
 
 # CONSTANTS
 
-N = 2 ** 16 #100000
+N = 2 ** 15
 SPOT_100 = 100
 SPOT_130 = 130
 
@@ -35,8 +35,6 @@ randomStrat = AntiThetic(randomStrat0)
 
 # CALCULATIONS
 
-t1 = time.time()
-
 simple_mc(call_130_1, SPOT_100, vol, r, N, gatherer, randomStrat)
 print(gatherer.get_results())
 
@@ -44,6 +42,3 @@ print("")
 
 simple_mc(call_130_1, SPOT_100, vol, r, N, gathererB, randomStrat)
 print(gathererB.get_results())
-
-t2 = time.time()
-print(str(round(t2 - t1,2)) + " seconds")
